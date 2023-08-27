@@ -21,11 +21,11 @@ const StudentSchema = new Schema({
         {
             courseName: {
                 type: String,
-                required
+                required: true
             },
             grade: {
                 type: Number,
-                required
+                required: true
             }
         }
         
