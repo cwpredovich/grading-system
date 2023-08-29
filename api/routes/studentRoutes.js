@@ -2,6 +2,37 @@ const express = require('express')
 const studentRouter = express.Router()
 const Student = require('../models/Student')
 
+//// POLYA'S PROCESS ////
+// 1.  Understand the problem
+    // I need a function that calculates and stores each student's gpa
+    // so, I need to add up their grade points from each class
+    // sum the number of classes
+    // divide the total grade points by the number of classes
+    // round the result to the nearest tenth ex. 3.7 or 3.2, not 3.718 or 3.196 respectively
+// 2.  Make a plan (pseudocode)
+    // I want to write a function outside of my .post() method that calculates the gpa
+    // and then I want to call that gpa calc func inside the .post()
+    const calculateGPA = (courseList) => {
+        // get the number of classes
+        const numOfCourses = courseList.length()
+        // initialize a variable to store the gradePoints
+        let totalGradePoints = 0
+        // next, get the totalGradePoints for each course and add them up in the gradePoints variable
+        courseList.forEach(course => totalGradePoints += course.grade)
+        // calculate gpa by dividing totalGradePoints by numOfCourses
+        let gpa = totalGradePoints / numOfCourses
+        // return gpa rounded to the nearest tenth, aka to the nearest decimal point
+        return gpa.toFixed(1)
+        }
+// 3.  Execute the plan
+// 4.  Review:
+    // Did it work? Does it work consistently?
+        // test cases:
+            // after changing a student's grade with the PUT request
+            // when there is only one course
+            // gpa's below zero
+            // rounding
+    // Was/Is there a better way?
 
 studentRouter.route('/')
     .get(async (req, res) => {
@@ -14,7 +45,8 @@ studentRouter.route('/')
             name: req.body.name,
             email: req.body.email,
             id: req.body.id,
-            courses: req.body.courses
+            courses: req.body.courses,
+            gpa: calculateGPA(req.body.courses)
         })
 
         student.save()
@@ -23,16 +55,16 @@ studentRouter.route('/')
     })
 
 // dumb bug, had to add a / in front of :id
-studentRouter.route('/:id') 
+studentRouter.route('/:student') 
     // Question:  Does this need to be asynchronous? I think so, but I want to try it without async/await
     .get(async (req, res) => {
-        const student = await Student.findOne({ _id: req.params.id })   // syntax is critical here. must have ({ _id: req.params.id }), not just (req.params.id)
+        const student = await Student.findOne({ _id: req.params.student })   // syntax is critical here. must have ({ _id: req.params.id }), not just (req.params.id)
 
         res.json(student)
     })
     
     .delete(async (req, res) => {
-        const result = await Student.findByIdAndDelete({ _id: req.params.id })
+        const result = await Student.findByIdAndDelete({ _id: req.params.student })
 
         res.json(result)
     })
@@ -82,10 +114,7 @@ studentRouter.route('/:student/:course/grade')
     res.json(grade)
     })
 
-// TESTING THE PUT REQUEST NOW...
-// Ok, so it seemed to work fine when I sent the put request
-// but I did a GET request right after finishing the PUT request,
-// and the grade did not change in the db
+// ...AND NOW THE PUT REQUEST BELOW WORKS WELL TOO!
     .put(async (req, res) => {
         try {
             let student = await Student.findOne({ _id: req.params.student })
@@ -96,40 +125,10 @@ studentRouter.route('/:student/:course/grade')
                 let courseIndex = await student.courses.findIndex(el => el.courseName.toLowerCase().replace(/ /g, '-') === req.params.course)
                 student.courses[courseIndex].grade = req.body.grade
                 student.save()
+                let newGPA = await Student.findOne({ _id: req.params.student})
 
                 return res.status(200).json(student)
             }
-
-            // let courseIndex = await student.courses.indexOf(el => el.courseName.toLowerCase().replace(/ /g, '-') === req.params.course)
-            // if () {
-            //     return res.status(404).json(
-            //         {
-            //             error: "Course not found for student",
-            //             course: req.params.course,
-            //             student: student
-            //         }
-            //         )
-            // }
-
-            // let hardCodedCourseIndex = 3
-            // if (hardCodedCourseIndex < 0) {
-            //     return res.status(404).json(
-            //         {
-            //             error: "Course not found for student"
-            //         }
-            //         )
-            // } else {
-            //     return res.status(200).json(
-            //         {
-            //             course: student.courses[hardCodedCourseIndex]
-            //         }
-            //     )
-            // }
-
-            
-            // student.save()
-
-            // res.json(student.courses)
         }
         
         catch (error) {
