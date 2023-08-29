@@ -12,9 +12,9 @@ const Student = require('../models/Student')
 // 2.  Make a plan (pseudocode)
     // I want to write a function outside of my .post() method that calculates the gpa
     // and then I want to call that gpa calc func inside the .post()
-    const calculateGPA = (courseList) => {
+    const calculateGpa = (courseList) => {
         // get the number of classes
-        const numOfCourses = courseList.length()
+        const numOfCourses = courseList.length
         // initialize a variable to store the gradePoints
         let totalGradePoints = 0
         // next, get the totalGradePoints for each course and add them up in the gradePoints variable
@@ -27,6 +27,7 @@ const Student = require('../models/Student')
 // 3.  Execute the plan
 // 4.  Review:
     // Did it work? Does it work consistently?
+        // no, had to fix minor bugs
         // test cases:
             // after changing a student's grade with the PUT request
             // when there is only one course
@@ -46,11 +47,11 @@ studentRouter.route('/')
             email: req.body.email,
             id: req.body.id,
             courses: req.body.courses,
-            gpa: calculateGPA(req.body.courses)
+            // needed to say this.courses, not just courses
+            gpa: calculateGpa(this.courses)
         })
 
         student.save()
-
         res.json(student)
     })
 
@@ -123,9 +124,12 @@ studentRouter.route('/:student/:course/grade')
             } else {
                 // bug:  had to use array.findIndex() method rather than array.indexOf()
                 let courseIndex = await student.courses.findIndex(el => el.courseName.toLowerCase().replace(/ /g, '-') === req.params.course)
+                
                 student.courses[courseIndex].grade = req.body.grade
+
+                student.gpa = await calculateGpa(student.courses)
+
                 student.save()
-                let newGPA = await Student.findOne({ _id: req.params.student})
 
                 return res.status(200).json(student)
             }
@@ -133,7 +137,7 @@ studentRouter.route('/:student/:course/grade')
         
         catch (error) {
             console.error(error)
-            res.status(500).json({ error:  "Internal server error"})
+            res.status(500).json({ error:  "Internal server error: unable to update grade."})
         }
     })
 

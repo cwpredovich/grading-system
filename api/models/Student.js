@@ -17,6 +17,10 @@ const StudentSchema = new Schema({
         required: true
         // TODO: perhaps add client-side validation for this too
     },
+    gpa: {
+        type: Number,
+        required: true
+    },
     courses: [
         {
             courseName: {
