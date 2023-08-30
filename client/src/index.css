@@ -11,3 +11,12 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.student {
+  width: 200px;
+  padding: 10px;
+}
+
+.add-form {
+  margin-left: 20px;
+}

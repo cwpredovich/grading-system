@@ -1,7 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-// data that is accessed together stays together
 const StudentSchema = new Schema({
     name: {
         type: String,
@@ -10,12 +9,10 @@ const StudentSchema = new Schema({
     email: {
         type: String,
         required: true
-        // TODO: add client-side data validation for the email address
     },
     id: {
         type: String,
         required: true
-        // TODO: perhaps add client-side validation for this too
     },
     gpa: {
         type: Number,

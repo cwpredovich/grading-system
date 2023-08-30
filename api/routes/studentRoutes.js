@@ -47,8 +47,9 @@ studentRouter.route('/')
             email: req.body.email,
             id: req.body.id,
             courses: req.body.courses,
+            gpa: req.body.gpa
             // needed to say this.courses, not just courses
-            gpa: calculateGpa(this.courses)
+            // gpa: calculateGpa(this.courses)
         })
 
         student.save()
