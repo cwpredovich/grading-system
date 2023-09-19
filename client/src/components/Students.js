@@ -2,26 +2,49 @@ import { useState, useEffect } from "react"
 
 const API_BASE = "http://127.0.0.1:3001"
 
-
 function Students() {
     const [students, setStudents] = useState([])
     const [isNewStudentFormShowing, setIsNewStudentFormShowing] = useState(false)
-    
+
+    const [courseCatalog, setCourseCatalog] = useState([])
+
     const [studentName, setStudentName] = useState('')
     const [email, setEmail] = useState('')
     const [studentId, setStudentId] = useState('')
-
     const [newCourses, setNewCourses] = useState([])
     
     useEffect(() => {
         GetStudents()
+        GetCourses()
     }, [])
 
     const GetStudents = () => {
-        fetch(API_BASE + "/students")
+        fetch(API_BASE + "/students/")
             .then(res => res.json())
             .then(data => setStudents(data))
             .catch(err => console.log("Error: ", err))
+    }
+
+    const GetCourses = () => {
+        fetch(API_BASE + "/courses/")
+            .then(res => res.json())
+            .then(data => setCourseCatalog(data))
+            .catch(err => console.log("Error: ", err))
+    }
+
+    const DeleteStudent = (studentDbId) => {
+        const deleteUrl = `${API_BASE}/students/${studentDbId}`
+        fetch(deleteUrl, {
+            method: 'DELETE',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(() => {
+            alert("Student removed from the database.")
+            window.location.reload()
+        })
     }
 
     // TODO:  Consider making a function that formats the gpa's so that they all include one decimal place, even if it's a whole number
@@ -35,8 +58,8 @@ function Students() {
     }
 
     const addNewCourses = (e) => {
-        setNewCourses([...newCourses, {courseId: newCourses.length, courseName: '', gradeId: newCourses.length + 1, grade: ''}])
         e.preventDefault()
+        setNewCourses([...newCourses, {courseId: newCourses.length, courseName: '', gradeId: newCourses.length + 1, grade: ''}])
     }
 
     // this function was implemented on the backend and worked fine there until i connected the frontend
@@ -51,34 +74,39 @@ function Students() {
     }
 
     const handleSubmit = (e) => {
-        let newCoursesConvertedGrades = newCourses.map(course => 
-            course.grade = convertGradeToGradePoints(course.grade))
-        
-        newCoursesConvertedGrades.forEach(course => {
-            delete course.courseId
-            delete course.gradeId
-        })
-
-        setNewCourses(newCoursesConvertedGrades)
-
-        const postUrl = API_BASE + "/students"
-        fetch(postUrl, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                name: studentName,
-                email: email,
-                id: studentId,
-                gpa: calculateGpa(newCourses),
-                courses: newCourses
+        if (newCourses[0].courseName) {
+            let newCoursesConvertedGrades = newCourses.map(course => 
+                course.grade = convertGradeToGradePoints(course.grade))
+            
+            newCoursesConvertedGrades.forEach(course => {
+                delete course.courseId
+                delete course.gradeId
             })
-        })
-        .then(()=>{
-            alert('New student has been added to the system!');
-        })
+    
+            setNewCourses(newCoursesConvertedGrades)
+    
+            const postUrl = API_BASE + "/students"
+            fetch(postUrl, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: studentName,
+                    email: email,
+                    id: studentId,
+                    gpa: calculateGpa(newCourses),
+                    courses: newCourses
+                })
+            })
+            .then(()=>{
+                alert('New student has been added to the system!');
+            })
+        } else {
+            e.preventDefault()
+            alert('Please add at least 1 course for the new student!')
+        }
     }
 
     const Header = () => {
@@ -102,7 +130,13 @@ function Students() {
             <ol>
                 {
                     students.map(student => (
-                        <li className='student' key={student._id}><button>{student.name}, {student.gpa} GPA</button></li>
+                        <li 
+                            className='student' 
+                            key={student._id}
+                        >
+                            <span className='name-and-gpa'>{student.name}, {student.gpa} GPA</span>
+                            <button onClick={() => DeleteStudent(student._id)}>Remove</button>
+                        </li>
                         
                     ))
                 }
@@ -146,29 +180,29 @@ function Students() {
                         ></input>
                     </div>
 
-                    
-
-                    <button onClick={addNewCourses}>+ Add Course for Student</button>
+                    <button onClick={addNewCourses}>+ Add at Least 1 Course for Student</button>
                     {newCourses.map((course, index) => (
                         <div key={course.courseId}>
                             <div>
                                 <label htmlFor={`course-${course.courseId}`}>Course {course.courseId + 1}: </label>
-                                <input
-                                    type='text'
-                                    id={`course-${course.courseId}`}
-                                    value={course.courseName}
-                                    onChange={(e) => {
-                                        const updatedCourses = [...newCourses]
-                                        updatedCourses[index].courseName = e.target.value
-                                        setNewCourses(updatedCourses)
-                                    }}
-                                >
-                                </input>
+                                <select onChange={(e) => {
+                                    const updatedCourses = [...newCourses]
+                                    updatedCourses[index].courseName = e.target.value
+                                    setNewCourses(updatedCourses)
+                                }}>
+                                    <option value="Select a course">---Select a course---</option>
+
+                                    {courseCatalog.map((course) => (
+                                        <option value={course.courseName}>{course.courseName}</option>
+                                    ))}
+                                </select>
+                                
                             </div>
                             <div>
                                 <label htmlFor={`grade-${course.gradeId}`}>Current Grade for Course {course.gradeId}: </label>
                                 <input
                                     type='text'
+                                    placeholder='Letter grade, ie. A, B, C, or etc.'
                                     id={`grade-${course.gradeId}`}
                                     value={course.grade}
                                     onChange={(e) => {

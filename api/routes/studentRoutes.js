@@ -34,6 +34,7 @@ const Student = require('../models/Student')
             // gpa's below zero
             // rounding
     // Was/Is there a better way?
+            // Yes. It is working a lot better now that it's implemented on the frontend.
 
 studentRouter.route('/')
     .get(async (req, res) => {

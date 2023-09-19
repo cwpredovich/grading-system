@@ -20,13 +20,15 @@ courseRouter.route('/')
     })
 
 // Get or Delete a specific course
-courseRouter.route('/:id')
+courseRouter.route('/:course')
     .get(async (req, res) => {
-        const course = await Course.findOne({ _id: req.params.id })
+        const courses = await Course.find()
+        const course = courses.find(el => el.courseName.toLowerCase().replace(/ /g, '-') === req.params.course)
 
         res.json(course)
     })
     
+    // TODO:  need to standardize this with the other request methods
     .delete(async (req, res) => {
         const result = await Course.findByIdAndDelete({ _id: req.params.id })
 
