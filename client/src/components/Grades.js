@@ -8,24 +8,19 @@ const Grades = () => {
     const [studentToFind, setStudentToFind] = useState('')
     const [coursesForStudent, setCoursesForStudent] = useState([])
     const [courseToFind, setCourseToFind] = useState({})
+    const [randomVariable, setRandomVariable] = useState('')
 
     const [currentGrade, setCurrentGrade] = useState('')
     
     const GetStudents = () => {
         fetch(`${API_BASE}/students`)
             .then(res => res.json())
-            .then(data => setStudents(data))
+            .then(data => {
+                setStudents(data)
+                console.log("Grades.js line 19. students:", students)
+            })
             .catch(err => console.log("Error: ", err))
     }
-    
-    // const GetGrade = () => {
-    //     fetch(`${API_BASE}/students/${studentToFind._id}/${courseToFind}/grade`)
-    //         .then(res => res.json())
-    //         .then(data => setCurrentGrade(data))
-    //         .catch(err => console.log("Error: ", err))
-    // }
-
-
     
     useEffect(() => {
         GetStudents()
@@ -36,30 +31,12 @@ const Grades = () => {
         };
         fetchCoursesForStudent();
 
-        // const fetchGrade = () => {
-        //     console.log("hello world")
-        //     const course = coursesForStudent.find((course, index) => course.courseName === courseToFind.courseName)
-        //     setCurrentGrade(course.grade)
-        // }
-
-        // fetchGrade()
-
-        // setCurrentGrade(studentToFind.courses.find(course => course.courseName === courseToFind).grade)
-
-        }, [studentToFind]
+        }, [studentToFind, randomVariable, currentGrade]
     );
-    
-    
-    // const GetCoursesForStudent = (studentDbId) => {
-    //     fetch(`${API_BASE}/students/${studentDbId}`)
-    //         .then(res => res.json())
-    //         .then(data => setCoursesForStudent(data.courses))
-    //         .catch(err => console.log("Error: ", err))
-    // }
 
     const handleGetGrade = (e) => {
         e.preventDefault()
-        const getUrl = `${API_BASE}/students/${studentToFind._id}/${courseToFind}/grade`
+        const getUrl = `${API_BASE}/students/${studentToFind}/${courseToFind}/grade`
         fetch(getUrl, {
             method: 'GET',
             headers: {
@@ -67,9 +44,15 @@ const Grades = () => {
                 'Content-Type': 'application/json'
             }
             })
-        .then(()=>{
-            alert('New course has been added to the system!');
+        .then((res)=>{
+            res.json()
         })
+        .then((data) => {
+            console.log("data: ", data)
+            setCurrentGrade(data)
+        })
+        .then(()=> console.log("currentGrade: ", currentGrade))
+        .catch(err => console.log("Error: ", err))
     }
 
     return(
@@ -82,7 +65,7 @@ const Grades = () => {
                         <select onChange={(e) => {
                             const selectedStudent = e.target.value
                             setStudentToFind(selectedStudent)
-                            console.log(studentToFind)
+                            console.log(`Grades.js line 85. studentToFind: ${studentToFind}`)
                         }}>
                             <option value="Select a student">---Select a student---</option>
                             {students.map(student => (
@@ -91,27 +74,45 @@ const Grades = () => {
                         </select>
                     </form>
                     {coursesForStudent ?
-                    <form>
+                    <form onSubmit={handleGetGrade}>
                         <label>Course: </label>
                         <select onChange={(e) => {
                             const selectedCourse = e.target.value // the courseName str
-                            const selectedCourseForStudentObj = coursesForStudent.find(course => course.courseName === selectedCourse)
-                            setCourseToFind(selectedCourseForStudentObj)
-                            console.log(courseToFind)
+                            console.log("selectedCourse: ", selectedCourse)
+                            const selectedCourseToFetch = selectedCourse.toLowerCase().replace(/ /g, '-')
+                            // const selectedCourseForStudentObj = coursesForStudent.find(course => course.courseName === selectedCourse)
+                            setCourseToFind(selectedCourseToFetch)
+                            console.log(`Grades.js line 101. selectedCourseToFetch: ${selectedCourseToFetch}`)
+                            setRandomVariable("Random Variable Text")
                             
+                            // get all students
+                            console.log("students: ", students)
+                            // find indiv student by id
+                            let selectedStudentDbId = studentToFind
+                            console.log("studentToFind: ", selectedStudentDbId)
+                            let selectedStudentObj = students.find(student => student._id === selectedStudentDbId)
+                            console.log("selectedStudentObj: ", selectedStudentObj)
+                            let coursesForSelStu = selectedStudentObj.courses
+                            console.log("coursesForSelStu: ", coursesForSelStu)
+                            let courseToFindGradeFor = coursesForSelStu.find(course => course.courseName === selectedCourse)
+                            console.log("Grades.js line 124. courseToFindGradeFor: ", courseToFindGradeFor)
+                            let gradeForSelCourse = courseToFindGradeFor.grade
+                            console.log("gradeForSelCourse: ", gradeForSelCourse)
+                            setCurrentGrade(gradeForSelCourse)
                         }}>
                             <option value="Select a course">---Select a course---</option>
                             {coursesForStudent.map(course => (
                                 <option value={course.courseName}>{course.courseName}</option>
                             ))}
                         </select>
-                        <button type="submit">Submit</button>
+                        {/* <button type="submit">Submit</button> */}
                     </form>
                     :
                     null
                     }
 
                     <div>
+                        {currentGrade ? <h4>Grade:</h4> : null}
                         {currentGrade}
                     </div>
                     
