@@ -34,25 +34,31 @@ const Grades = () => {
         }, [studentToFind, randomVariable, currentGrade]
     );
 
-    const handleGetGrade = (e) => {
-        e.preventDefault()
-        const getUrl = `${API_BASE}/students/${studentToFind}/${courseToFind}/grade`
-        fetch(getUrl, {
-            method: 'GET',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-            })
-        .then((res)=>{
-            res.json()
-        })
-        .then((data) => {
-            console.log("data: ", data)
-            setCurrentGrade(data)
-        })
-        .then(()=> console.log("currentGrade: ", currentGrade))
-        .catch(err => console.log("Error: ", err))
+    // const handleGetGrade = (e) => {
+    //     e.preventDefault()
+    //     const getUrl = `${API_BASE}/students/${studentToFind}/${courseToFind}/grade`
+    //     fetch(getUrl, {
+    //         method: 'GET',
+    //         headers: {
+    //             'Accept': 'application/json',
+    //             'Content-Type': 'application/json'
+    //         }
+    //         })
+    //     .then((res)=>{
+    //         res.json()
+    //     })
+    //     .then((data) => {
+    //         console.log("data: ", data)
+    //         setCurrentGrade(data)
+    //     })
+    //     .then(()=> console.log("currentGrade: ", currentGrade))
+    //     .catch(err => console.log("Error: ", err))
+    // }
+
+    const convertGradePointsToLetterGrade = (gradePoints) => {
+        const gradeConversionArray = ['F', 'D', 'C', 'B', 'A']
+        let conversion = gradeConversionArray[gradePoints]
+        return conversion
     }
 
     return(
@@ -60,7 +66,7 @@ const Grades = () => {
             <div>
                 <h3>Search Student Grades:</h3>
                 <div>
-                    <form onSubmit={handleGetGrade}>
+                    <form>
                         <label>Student: </label>
                         <select onChange={(e) => {
                             const selectedStudent = e.target.value
@@ -74,7 +80,7 @@ const Grades = () => {
                         </select>
                     </form>
                     {coursesForStudent ?
-                    <form onSubmit={handleGetGrade}>
+                    <form>
                         <label>Course: </label>
                         <select onChange={(e) => {
                             const selectedCourse = e.target.value // the courseName str
@@ -98,7 +104,7 @@ const Grades = () => {
                             console.log("Grades.js line 124. courseToFindGradeFor: ", courseToFindGradeFor)
                             let gradeForSelCourse = courseToFindGradeFor.grade
                             console.log("gradeForSelCourse: ", gradeForSelCourse)
-                            setCurrentGrade(gradeForSelCourse)
+                            setCurrentGrade(convertGradePointsToLetterGrade(gradeForSelCourse))
                         }}>
                             <option value="Select a course">---Select a course---</option>
                             {coursesForStudent.map(course => (
@@ -111,9 +117,11 @@ const Grades = () => {
                     null
                     }
 
-                    <div>
+                    <div className="grade-container">
                         {currentGrade ? <h4>Grade:</h4> : null}
-                        {currentGrade}
+                        <div className="grade">
+                            {currentGrade}
+                        </div>
                     </div>
                     
                 </div>
