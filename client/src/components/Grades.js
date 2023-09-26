@@ -7,8 +7,7 @@ const Grades = () => {
     const [students, setStudents] = useState([])
     const [studentToFind, setStudentToFind] = useState('')
     const [coursesForStudent, setCoursesForStudent] = useState([])
-    const [courseToFind, setCourseToFind] = useState({})
-    const [randomVariable, setRandomVariable] = useState('')
+    // const [courseToFind, setCourseToFind] = useState({})
 
     const [currentGrade, setCurrentGrade] = useState('')
     
@@ -31,7 +30,7 @@ const Grades = () => {
         };
         fetchCoursesForStudent();
 
-        }, [studentToFind, randomVariable, currentGrade]
+        }, [studentToFind, currentGrade]
     );
 
     // const handleGetGrade = (e) => {
@@ -87,9 +86,8 @@ const Grades = () => {
                             console.log("selectedCourse: ", selectedCourse)
                             const selectedCourseToFetch = selectedCourse.toLowerCase().replace(/ /g, '-')
                             // const selectedCourseForStudentObj = coursesForStudent.find(course => course.courseName === selectedCourse)
-                            setCourseToFind(selectedCourseToFetch)
+                            // setCourseToFind(selectedCourseToFetch)
                             console.log(`Grades.js line 101. selectedCourseToFetch: ${selectedCourseToFetch}`)
-                            setRandomVariable("Random Variable Text")
                             
                             // get all students
                             console.log("students: ", students)
