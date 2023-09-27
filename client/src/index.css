@@ -12,9 +12,12 @@ code {
     monospace;
 }
 
-.container {
+.app {
+  display: grid;
   width: 100%;
 }
+
+
 
 .grid {
   display: grid;
