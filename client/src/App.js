@@ -1,7 +1,8 @@
 import Students from "./components/Students";
 import Courses from "./components/Courses";
 import Grades from "./components/Grades";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import ToggleLighting from "./components/ToggleLighting";
 
 
 function App() {
@@ -23,24 +24,22 @@ function App() {
 
   return (
     <div className="app">
+      {/* <ToggleLighting /> */}
       <header>
         <h1>Galactic Grading System</h1>
         <p><i>Do or do not. There is no try. - Master Yoda</i></p>
       </header>
-      <nav>
-        <button className="nav-btn" onClick={() => setView('students')}>Students</button>
-        <button className="nav-btn" onClick={() => setView('courses')}>Courses</button>
-        <button className="nav-btn" onClick={() => setView('search grades')}>Search Grades</button>
-        {isLoggedIn ? <button onClick={() => setIsLoggedIn(!isLoggedIn)}>Log Out</button> : <button onClick={() => setIsLoggedIn(!isLoggedIn)}>Log In</button>}
-      </nav>
-      <div className="container">
-        <div className="grid">
+      <main>
+        <nav>
+          <button className="nav-btn" onClick={() => setView('students')}>Students</button>
+          <button className="nav-btn" onClick={() => setView('courses')}>Courses</button>
+          <button className="nav-btn" onClick={() => setView('search grades')}>Search Grades</button>
+          {isLoggedIn ? <button onClick={() => setIsLoggedIn(!isLoggedIn)}>Log Out</button> : <button onClick={() => setIsLoggedIn(!isLoggedIn)}>Log In</button>}
+        </nav>
+        <div>
           {renderSwitch(view)}
-          {/* <div><Students /></div>
-          <div><Courses /></div>
-          <div><Grades /></div> */}
         </div>
-      </div>
+      </main>
     </div>
   );
 }
