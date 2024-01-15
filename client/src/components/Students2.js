@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 
 const API_BASE = "http://127.0.0.1:3001"
 
-function Students() {
+function Students2() {
     const [students, setStudents] = useState([])
     const [isNewStudentFormShowing, setIsNewStudentFormShowing] = useState(false)
 
@@ -112,41 +112,53 @@ function Students() {
     const Header = () => {
         return(
             <div>
-                <h3>All Students:</h3>
                 <button 
                     onClick={() => {
                         setIsNewStudentFormShowing(!isNewStudentFormShowing)
                         }}>
-                    {!isNewStudentFormShowing ? <span>+ </span> : <span>- </span>} Add Student
+                    {!isNewStudentFormShowing ? <span>Add Student </span> : <span>Cancel</span>}
                 </button>
             </div>
         )
     }
 
-    
-
     const StudentList = () => {
         return(
-            <ol>
+            <div>
+                <div className="row page-header">
+                    <div className="col-6 grid-item col-header">Name</div>
+                    <div className="col-3 grid-item col-header">Course Qty.</div>
+                    <div className="col-3 grid-item col-header">Cum. GPA</div>
+                </div>
+
+                <div className="spacer">
+                </div>
+                
                 {
                     students.map(student => (
-                        <li 
-                            className='student' 
-                            key={student._id}
-                        >
-                            <span className='name-and-gpa'>{student.name}, {student.gpa} GPA</span>
-                            <button onClick={() => DeleteStudent(student._id)}>Remove</button>
-                        </li>
-                        
+                        <div className="row page-item" key={student._id}>
+                            <div className="col-6 grid-item">
+                                {student.name}
+                            </div>
+                            <div className="col-3 grid-item">
+                                Course Qty.    
+                            </div>
+                            <div className="col-3 grid-item">
+                                {student.gpa}
+                            </div>
+                            {/* <div>
+                                <button onClick={() => DeleteStudent(student._id)}>Remove</button>
+                            </div> */}
+                        </div>
                     ))
                 }
-            </ol>
+            </div>
         )
     }
-
+    
     return(
         <div>
-            <Header />
+            <StudentList />
             {isNewStudentFormShowing ? 
                 <form className='add-form' onSubmit={handleSubmit}>
                     <div>
@@ -229,9 +241,9 @@ function Students() {
                 :
                 null
             }
-            <StudentList />
+            <Header />
         </div>
     )
 }
 
-export default Students
+export default Students2

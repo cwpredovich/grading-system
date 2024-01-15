@@ -6,7 +6,7 @@ import { useState } from "react";
 
 function App() {
   
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  // const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [view, setView] = useState('students')
   
   const renderSwitch = (view) => {

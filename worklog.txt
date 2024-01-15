@@ -1,0 +1,44 @@
+I want to keep track of how much time I dedicate to this project.
+So far, I've put about 2 to 3 weeks of hard work into it.
+The project was a originally aimed at being a test of my skills for an interview for a software company called SoftServe.
+When the company decided not to hire me, I was discouraged and stopped working on this app for awhile.
+
+-----------
+
+12/28/2023
+Clock In:  12:30am
+Clock Out:  3:41am
+Total Time:  3hrs 11mins = 3 + (11/60) = 3.18hrs
+
+Work Accomplished:
+Finished the HTML and CSS redesign to match the frontend design that I want to go with:
+"./grading-system/frontend_design/affinity_designs/seconditeration.jpg"
+The redesigned wireframe is coded here:
+"./grading-system/client/src/AppReimagined.js"
+and
+"./grading-system/client/src/AppReimagined.css"
+
+I feel great about the redesign. I'm proud of my work. I used a lot of CSS Grid (and Flexbox) resources found on W3 Schools, Stack Overflow, and CSS Tricks.
+
+Next Up:
+> I need to wire up the frontend so that it's functional, not just pretty.
+> After that, I need to spend a good amount of time bug hunting and bug squashing.
+> When all of that is done, I really really really want to add authentication.
+
+
+
+----------
+
+12/28/2023
+Clock In:  3:51am
+Clock Out:  5:23am
+Total Time = 1hr 32mins
+
+Work Goal:
+Wire up the front end -> DONE! Well, mostly.
+Reformat the Students, Courses, and Search Grade pages -> Reformatted the Students and Courses pages. Everything still needs work...
+
+
+----------
+12/28/2023
+Clock In:  10:28am
