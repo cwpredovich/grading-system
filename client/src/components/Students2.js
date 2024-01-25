@@ -59,12 +59,22 @@ function Students2() {
 
     const addNewCourses = (e) => {
         e.preventDefault()
-        setNewCourses([...newCourses, {courseId: newCourses.length, courseName: '', gradeId: newCourses.length + 1, grade: ''}])
+        setNewCourses([
+            ...newCourses, 
+            {
+                courseId: newCourses.length,
+                courseName: '',
+                gradeId: newCourses.length + 1,
+                grade: ''
+            }
+        ])
     }
 
     // this function was implemented on the backend and worked fine there until i connected the frontend
     // now the app is working, except that the gpa calculation seems to be wrong
     // everyone with only one class gets a 4 gpa
+    // UPDATE:  bug was fixed some time ago. I tested it today, and gpa calc works fine now.
+    // not sure what I did to fix it.
     const calculateGpa = (courseList) => {
         const numOfCourses = courseList.length
         let totalGradePoints = 0
@@ -74,7 +84,10 @@ function Students2() {
     }
 
     const handleSubmit = (e) => {
-        if (newCourses[0].courseName) {
+        e.preventDefault()
+        console.log(newCourses)
+        // if the first object in the newCourses array has a value for the key courseName
+        if (newCourses[0] && newCourses[0].courseName) {
             let newCoursesConvertedGrades = newCourses.map(course => 
                 course.grade = convertGradeToGradePoints(course.grade))
             
@@ -200,10 +213,11 @@ function Students2() {
                         <div key={course.courseId}>
                             <div>
                                 <label htmlFor={`course-${course.courseId}`}>Course {course.courseId + 1}: </label>
-                                <select onChange={(e) => {
+                                <select required onChange={(e) => {
                                     const updatedCourses = [...newCourses]
                                     updatedCourses[index].courseName = e.target.value
                                     setNewCourses(updatedCourses)
+                                    console.log(newCourses)
                                 }}>
                                     <option value="Select a course">---Select a course---</option>
 
@@ -216,6 +230,7 @@ function Students2() {
                             <div>
                                 <label htmlFor={`grade-${course.gradeId}`}>Current Grade for Course {course.gradeId}: </label>
                                 <input
+                                    required
                                     type='text'
                                     placeholder='Letter grade, ie. A, B, C, or etc.'
                                     id={`grade-${course.gradeId}`}
@@ -228,10 +243,7 @@ function Students2() {
                                 >
                                 </input>
                             </div>
-
-
                         </div>
-
                     ))}
 
                     <div>

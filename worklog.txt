@@ -40,5 +40,22 @@ Reformat the Students, Courses, and Search Grade pages -> Reformatted the Studen
 
 
 ----------
-12/28/2023
-Clock In:  10:28am
+1/15/2024
+Clock In:  1:00pm
+
+Work Goal:
+Fix bugs!
+I wanted to fix the bug that caused the app to crash whenever new students were added without any courses.
+
+Problem code:
+if (newCourses[0].courseName) {}
+
+Browser error:
+cannot read properties of undefined (reading 'courseName') Students2.js:90
+
+I looked at line 90 of Students2.js file. That's the problem code.
+At first, I thought maybe I could check if newCourses is truthy before allowing the form to be submitted. So, I wrote:
+
+if (newCourses && newCourses[0].courseName) {}
+
+But I kept getting the same error. So, I tried something else. I tried submitting a new student without any courses, but also without clicking the add new courses button. That worked! The browser alerted me that I need to add at least one course.
