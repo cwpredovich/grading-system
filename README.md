@@ -9,3 +9,5 @@
    run command:
 
    > npm start
+
+*requires that you install NodeJS and MongoDB

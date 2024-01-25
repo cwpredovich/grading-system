@@ -5,8 +5,8 @@ const API_BASE = "http://localhost:3001"
 const Courses2 = () => {
 
     const [courseCatalog, setCourseCatalog] = useState([])
-    // const [isNewCourseFormShowing, setIsNewCourseFormShowing] = useState(false)
-    // const [newCourse, setNewCourse] = useState({})
+    const [isNewCourseFormShowing, setIsNewCourseFormShowing] = useState(false)
+    const [newCourse, setNewCourse] = useState({})
 
     const GetCourses = () => {
         fetch(API_BASE + "/courses/")
@@ -19,22 +19,22 @@ const Courses2 = () => {
         GetCourses()
     }, [])
 
-    // const handleSubmit = () => {
-    //     const postUrl = API_BASE + "/courses"
-    //     fetch(postUrl, {
-    //         method: 'POST',
-    //         headers: {
-    //             'Accept': 'application/json',
-    //             'Content-Type': 'application/json'
-    //         },
-    //         body: JSON.stringify({
-    //             courseName: newCourse.courseName
-    //         })
-    //     })
-    //     .then(()=>{
-    //         alert('New course has been added to the system!');
-    //     })
-    // }
+    const handleSubmit = () => {
+        const postUrl = API_BASE + "/courses"
+        fetch(postUrl, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                courseName: newCourse.courseName
+            })
+        })
+        .then(()=>{
+            alert('New course has been added to the system!');
+        })
+    }
 
     return(
         <div>
@@ -46,8 +46,8 @@ const Courses2 = () => {
                     <div className="col-12 grid-item course-listing">{course.courseName}</div>
                 )}
             </div>
-            {/* <button onClick={() => setIsNewCourseFormShowing(!isNewCourseFormShowing)}>+ Add Course</button> */}
-            {/* {isNewCourseFormShowing ? 
+            <button onClick={() => setIsNewCourseFormShowing(!isNewCourseFormShowing)}>+ Add Course</button>
+            {isNewCourseFormShowing ? 
                 <form onSubmit={handleSubmit}>
                     <label>Course Name: </label>
                     <input 
@@ -62,7 +62,7 @@ const Courses2 = () => {
                 </form>
                 :
                 null
-            } */}
+            }
 
             
         </div>

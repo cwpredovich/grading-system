@@ -2,6 +2,7 @@ import './AppReimagined.css';
 import Students2 from "./components/Students2";
 import Courses2 from "./components/Courses2";
 import Grades2 from "./components/Grades2";
+import Login from "./components/Login";
 import { useState } from "react";
 
 
@@ -59,7 +60,8 @@ function App2() {
                         </div>
                         <div className="nav-links-auth">
                             {/* {isLoggedIn ? <button onClick={() => setIsLoggedIn(!isLoggedIn)}>Log Out</button> : <button onClick={() => setIsLoggedIn(!isLoggedIn)}>Log In</button>} */}
-                            <div className="grid-item nav-btn auth">Login/Logout</div>
+                            <Login />
+                            {/* <div className="grid-item nav-btn auth">Login/Logout</div> */}
                         </div>
                     </nav>
 
