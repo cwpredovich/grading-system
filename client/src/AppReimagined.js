@@ -44,7 +44,7 @@ function App2() {
             </header>
 
             <div className="md-grid-container">
-                <div className="row">
+                <div className="row biggest">
                     {/* vertical bar for navigation */}
                     <nav className="col-2">
                         <div className="nav-links-pages">

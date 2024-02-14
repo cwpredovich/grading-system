@@ -11,6 +11,7 @@ const Grades2 = () => {
     // const [courseToFind, setCourseToFind] = useState({})
 
     const [currentGrade, setCurrentGrade] = useState('')
+    const [editingGrade, setEditingGrade] = useState(false)
     
     const GetStudents = () => {
         fetch(`${API_BASE}/students`)
@@ -61,6 +62,16 @@ const Grades2 = () => {
         return conversion
     }
 
+    const resetCourseListAndGrade = () => {
+        setCoursesForStudent([])
+        setCurrentGrade('')
+    }
+
+    const editGrade = () => {
+        setEditingGrade(!editingGrade)
+        // setCurrentGrade('')
+    }
+
     return(
         
             <div>
@@ -72,6 +83,7 @@ const Grades2 = () => {
                                 const selectedStudent = e.target.value
                                 setStudentToFind(selectedStudent)
                                 console.log(`Grades.js line 85. studentToFind: ${studentToFind}`)
+                                resetCourseListAndGrade()
                             }}>
                                 <option value="Select a student">---Select a student---</option>
                                 {students.map(student => (
@@ -86,25 +98,25 @@ const Grades2 = () => {
                             <label>Course: </label>
                             <select onChange={(e) => {
                                 const selectedCourse = e.target.value // the courseName str
-                                console.log("selectedCourse: ", selectedCourse)
-                                const selectedCourseToFetch = selectedCourse.toLowerCase().replace(/ /g, '-')
+                                // console.log("selectedCourse: ", selectedCourse)
+                                // const selectedCourseToFetch = selectedCourse.toLowerCase().replace(/ /g, '-')
                                 // const selectedCourseForStudentObj = coursesForStudent.find(course => course.courseName === selectedCourse)
                                 // setCourseToFind(selectedCourseToFetch)
-                                console.log(`Grades.js line 101. selectedCourseToFetch: ${selectedCourseToFetch}`)
+                                // console.log(`Grades.js line 101. selectedCourseToFetch: ${selectedCourseToFetch}`)
                                 
                                 // get all students
-                                console.log("students: ", students)
+                                // console.log("students: ", students)
                                 // find indiv student by id
                                 let selectedStudentDbId = studentToFind
-                                console.log("studentToFind: ", selectedStudentDbId)
+                                // console.log("studentToFind: ", selectedStudentDbId)
                                 let selectedStudentObj = students.find(student => student._id === selectedStudentDbId)
-                                console.log("selectedStudentObj: ", selectedStudentObj)
+                                // console.log("selectedStudentObj: ", selectedStudentObj)
                                 let coursesForSelStu = selectedStudentObj.courses
-                                console.log("coursesForSelStu: ", coursesForSelStu)
+                                // console.log("coursesForSelStu: ", coursesForSelStu)
                                 let courseToFindGradeFor = coursesForSelStu.find(course => course.courseName === selectedCourse)
-                                console.log("Grades.js line 124. courseToFindGradeFor: ", courseToFindGradeFor)
+                                // console.log("Grades.js line 124. courseToFindGradeFor: ", courseToFindGradeFor)
                                 let gradeForSelCourse = courseToFindGradeFor.grade
-                                console.log("gradeForSelCourse: ", gradeForSelCourse)
+                                // console.log("gradeForSelCourse: ", gradeForSelCourse)
                                 setCurrentGrade(convertGradePointsToLetterGrade(gradeForSelCourse))
                             }}>
                                 <option value="Select a course">---Select a course---</option>
@@ -112,7 +124,6 @@ const Grades2 = () => {
                                     <option value={course.courseName}>{course.courseName}</option>
                                 ))}
                             </select>
-                            {/* <button type="submit">Submit</button> */}
                         </form>
                         :
                         null
@@ -120,10 +131,46 @@ const Grades2 = () => {
                     </div>
 
                     <div className="grade-container">
-                        {currentGrade ? <h4>Grade:</h4> : null}
-                        <div className="grade">
-                            {currentGrade}
-                        </div>
+                        {currentGrade ? 
+                            <div className="grade">
+                                {editingGrade ?
+                                    <div>
+                                        Old Grade: {currentGrade}
+                                    </div>
+                                :
+                                    
+                                    <div>
+                                        Grade: {currentGrade}
+                                    </div>
+                                }
+                                <div>
+                                    {
+                                        editingGrade ?
+                                            <div>
+                                                <form>
+                                                    <label>New Grade: </label>
+                                                    <select>
+                                                        <option>---New Grade---</option>
+                                                        <option>A</option>
+                                                        <option>B</option>
+                                                        <option>C</option>
+                                                        <option>D</option>
+                                                        <option>F</option>
+                                                    </select>
+                                                </form>
+                                                <button>Save</button>
+                                                <button onClick={(e) => editGrade()}>Cancel</button>
+                                            </div>
+                                        :
+                                            <div>
+                                                <button onClick={(e) => editGrade()}>Edit</button>
+                                            </div>
+                                    }
+                                </div> 
+                            </div>
+                        : 
+                        null}
+                        
                     </div>
                     
                 </div>

@@ -66,9 +66,14 @@ nav {
     border-right: 1px solid black;
 }
 
+.biggest {
+    padding-bottom: 0px;
+}
+
 .nav-btn {
     width: 100%;
     padding: 15px 0px 15px 0px;
+    cursor: pointer;
 }
 
 .nav-btn:hover {
