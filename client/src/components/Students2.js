@@ -56,8 +56,7 @@ function Students2() {
     }
 
     // TODO:  Need to make sure that user can't add a student to a class more than once
-    // TODO:  Need to make a way to remove new classes before submitting
-
+    
     const addNewCourses = (e) => {
         e.preventDefault()
         setNewCourses([
@@ -70,10 +69,11 @@ function Students2() {
             }
         ])
     }
+    
+    // TODO:  Need to make a way to remove new classes before submitting
+    // const removeNewCourses = () => {
 
-    const removeNewCourses = () => {
-
-    }
+    // }
 
     // this function was implemented on the backend and worked fine there until i connected the frontend
     // now the app is working, except that the gpa calculation seems to be wrong
