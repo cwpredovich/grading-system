@@ -6,12 +6,16 @@ const API_BASE = "http://127.0.0.1:3001"
 const Grades2 = () => {
 
     const [students, setStudents] = useState([])
+    // string holding the db id for the selected student (not the student id #; this is actually the mongodb id #)
     const [studentToFind, setStudentToFind] = useState('')
     const [coursesForStudent, setCoursesForStudent] = useState([])
     // const [courseToFind, setCourseToFind] = useState({})
 
     const [currentGrade, setCurrentGrade] = useState('')
     const [editingGrade, setEditingGrade] = useState(false)
+    const [courseToFind, setCourseToFind] = useState('')
+    const [gradeEdit, setGradeEdit] = useState('')
+
     
     const GetStudents = () => {
         fetch(`${API_BASE}/students`)
@@ -26,6 +30,7 @@ const Grades2 = () => {
     useEffect(() => {
         GetStudents()
         const fetchCoursesForStudent = async () => {
+            // fetch the student's courses array, which has 
             const response = await fetch(`${API_BASE}/students/${studentToFind}`);
             const data = await response.json();
             setCoursesForStudent(data.courses);
@@ -72,6 +77,43 @@ const Grades2 = () => {
         // setCurrentGrade('')
     }
 
+    const convertLetterGradeToGradePoints = (grade) => {
+        const gradeConversionArray = ['f', 'd', 'c', 'b', 'a']
+        let conversion = gradeConversionArray.indexOf(grade.toLowerCase())
+        return conversion
+    }
+
+    const handleSubmitNewGrade = () => {
+        console.log("submit new grade clicked")
+        console.log(courseToFind)
+        //   1. Set up the body of the PUT request
+        //     1a. Lower case the course name and replace spaces with hyphens
+        //         this is the /:course part of the PUT request
+        let convertedCourseName = courseToFind.courseName.toLowerCase().replace(/ /g, '-')
+        //     1b. Store the /:student part of the PUT request
+        let studentDbId = studentToFind
+
+        // newGrade is the body of the PUT request
+        // it is the /grade part of the PUT request
+        let newGrade = convertLetterGradeToGradePoints(gradeEdit)
+
+        const putUrl = `${API_BASE}/students/${studentDbId}/${convertedCourseName}/grade`
+
+        fetch(putUrl, {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                // should i be sending a letter grade or the numerical grade points to the back end?
+                grade: newGrade
+            })
+        }).then(() => {
+            alert("Grade changed!")
+        })
+    }
+
     return(
         
             <div>
@@ -104,8 +146,6 @@ const Grades2 = () => {
                                 // setCourseToFind(selectedCourseToFetch)
                                 // console.log(`Grades.js line 101. selectedCourseToFetch: ${selectedCourseToFetch}`)
                                 
-                                // get all students
-                                // console.log("students: ", students)
                                 // find indiv student by id
                                 let selectedStudentDbId = studentToFind
                                 // console.log("studentToFind: ", selectedStudentDbId)
@@ -114,7 +154,19 @@ const Grades2 = () => {
                                 let coursesForSelStu = selectedStudentObj.courses
                                 // console.log("coursesForSelStu: ", coursesForSelStu)
                                 let courseToFindGradeFor = coursesForSelStu.find(course => course.courseName === selectedCourse)
+                                setCourseToFind(courseToFindGradeFor)
                                 // console.log("Grades.js line 124. courseToFindGradeFor: ", courseToFindGradeFor)
+                                
+                                
+                                // 1.  I need to allow users to edit grades
+                                // 2.  After the user selects a student and a course,
+                                //     create a variable that holds the path to the grade
+                                //     i already have a state variable holding the db id:
+                                //     studentToFind
+                                //     now when the course is selected, i will have a state var
+                                //     storing the course name (all lowercase with )
+
+
                                 let gradeForSelCourse = courseToFindGradeFor.grade
                                 // console.log("gradeForSelCourse: ", gradeForSelCourse)
                                 setCurrentGrade(convertGradePointsToLetterGrade(gradeForSelCourse))
@@ -147,18 +199,20 @@ const Grades2 = () => {
                                     {
                                         editingGrade ?
                                             <div>
-                                                <form>
+                                                <form onSubmit={handleSubmitNewGrade}>
                                                     <label>New Grade: </label>
-                                                    <select>
-                                                        <option>---New Grade---</option>
-                                                        <option>A</option>
-                                                        <option>B</option>
-                                                        <option>C</option>
-                                                        <option>D</option>
-                                                        <option>F</option>
+                                                    <select required onChange={(e) => {
+                                                        setGradeEdit(e.target.value)
+                                                    }}>
+                                                        <option value="New Grade">---New Grade---</option>
+                                                        <option value="A">A</option>
+                                                        <option value="B">B</option>
+                                                        <option value="C">C</option>
+                                                        <option value="D">D</option>
+                                                        <option value="F">F</option>
                                                     </select>
+                                                    <button type='submit'>Save</button>
                                                 </form>
-                                                <button>Save</button>
                                                 <button onClick={(e) => editGrade()}>Cancel</button>
                                             </div>
                                         :

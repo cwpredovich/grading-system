@@ -103,7 +103,6 @@ studentRouter.route('/:student/:course')
     })
 
 // EXPERIMENTAL ROUTE //
-
 // THE GET REQUEST BELOW WORKS!
 studentRouter.route('/:student/:course/grade')
     .get(async (req, res) => {
@@ -125,11 +124,15 @@ studentRouter.route('/:student/:course/grade')
                 return res.status(404).json({ error: "Student not found" })
             } else {
                 // bug:  had to use array.findIndex() method rather than array.indexOf()
-                let courseIndex = await student.courses.findIndex(el => el.courseName.toLowerCase().replace(/ /g, '-') === req.params.course)
+                // let courseIndex = await student.courses.findIndex(el => el.courseName.toLowerCase().replace(/ /g, '-') === req.params.course)
+                // commented out the above line and removed the await, keeping it here in case it doesn't work
+                // without the await
+                let courseIndex = student.courses.findIndex(el => el.courseName.toLowerCase().replace(/ /g, '-') === req.params.course)
                 
                 student.courses[courseIndex].grade = req.body.grade
 
-                student.gpa = await calculateGpa(student.courses)
+                // student.gpa = await calculateGpa(student.courses)
+                student.gpa = calculateGpa(student.courses)
 
                 student.save()
 
