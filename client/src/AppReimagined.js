@@ -52,17 +52,17 @@ function App2() {
                                 Students
                             </div>
                             <div className="grid-item nav-btn" style={styles.courses} onClick={() => setView('courses')}>
-                                Courses
+                                Course Catalog
                             </div>
                             <div className="grid-item nav-btn" style={styles.search} onClick={() => setView('search grades')}>
-                                Search Grade
+                                Grades
                             </div>
                         </div>
-                        <div className="nav-links-auth">
-                            {/* {isLoggedIn ? <button onClick={() => setIsLoggedIn(!isLoggedIn)}>Log Out</button> : <button onClick={() => setIsLoggedIn(!isLoggedIn)}>Log In</button>} */}
+                        {/* <div className="nav-links-auth">
+                            {isLoggedIn ? <button onClick={() => setIsLoggedIn(!isLoggedIn)}>Log Out</button> : <button onClick={() => setIsLoggedIn(!isLoggedIn)}>Log In</button>}
                             <Login />
-                            {/* <div className="grid-item nav-btn auth">Login/Logout</div> */}
-                        </div>
+                            <div className="grid-item nav-btn auth">Login/Logout</div>
+                        </div> */}
                     </nav>
 
                     {/* rectangle that takes up the rest of the page */}

@@ -14,6 +14,8 @@ function Students2() {
     const [email, setEmail] = useState('')
     const [studentId, setStudentId] = useState('')
     const [newCourses, setNewCourses] = useState([])
+
+    const [isSubmitBtnDisabled, setIsSubmitBtnDisabled] = useState(true)
     
     useEffect(() => {
         GetStudents()
@@ -59,6 +61,7 @@ function Students2() {
     
     const addNewCourses = (e) => {
         e.preventDefault()
+        setIsSubmitBtnDisabled(true)
         setNewCourses([
             ...newCourses, 
             {
@@ -100,11 +103,24 @@ function Students2() {
         setIsNewStudentFormShowing(false)
     }
 
+    const checkAllFields = () => {
+        // check to make sure that all form inputs and selects have been filled in
+        if (studentName !== "" && 
+            email !== "" && 
+            studentId !== "" && 
+            newCourses.length > 0 && 
+            newCourses.every(course => course.grade)) {
+                // if all checks are passed, enable submit button
+                setIsSubmitBtnDisabled(false)
+        }
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault()
         console.log(newCourses)
         // if the first object in the newCourses array has a value for the key courseName
-        if (newCourses[0] && newCourses[0].courseName) {
+        // TODO:  NEED better form validation
+        if (newCourses[0] && newCourses[0].courseName && newCourses[0].grade) {
             let newCoursesConvertedGrades = newCourses.map(course => 
                 course.grade = convertGradeToGradePoints(course.grade))
             
@@ -136,7 +152,7 @@ function Students2() {
             })
         } else {
             e.preventDefault()
-            alert('Please add at least 1 course for the new student!')
+            alert('Please add at least 1 course (and a current grade) for the new student!')
         }
     }
 
@@ -146,7 +162,7 @@ function Students2() {
                 <div className="row page-header">
                     <div className="col-6 grid-item col-header">Name</div>
                     <div className="col-3 grid-item col-header">Course Qty.</div>
-                    <div className="col-3 grid-item col-header">Cum. GPA</div>
+                    <div className="col-3 grid-item col-header">Total GPA</div>
                 </div>
 
                 <div className="spacer">
@@ -156,8 +172,8 @@ function Students2() {
                     students.map(student => (
                         <div className="row page-item" key={student._id}>
                             <div className="col-6 grid-item">
-                                {student.name}
-                                <button className="remove-student-btn" onClick={() => DeleteStudent(student._id)}>Remove</button>
+                                <span className="student-name">{student.name}</span>
+                                <span className="remove-stu-btn"><button className="red-btn" onClick={() => DeleteStudent(student._id)}>Remove</button></span>
                             </div>
                             <div className="col-3 grid-item">
                                 {student.courses.length}    
@@ -185,6 +201,7 @@ function Students2() {
                                 required 
                                 type='text'
                                 name='name'
+                                className='required'
                                 id='name'
                                 value={studentName}
                                 onChange={(e) => setStudentName(e.target.value)}
@@ -196,6 +213,7 @@ function Students2() {
                                 required
                                 type='email'
                                 name='email'
+                                className='required'
                                 id='email'
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
@@ -205,8 +223,9 @@ function Students2() {
                             <label htmlFor='id'>ID: </label>
                             <input 
                                 required
-                                type='text'
+                                type='number'
                                 name='id'
+                                className='required'
                                 id='studentId'
                                 value={studentId}
                                 onChange={(e) => setStudentId(e.target.value)}
@@ -221,13 +240,15 @@ function Students2() {
                                     <label htmlFor={`course-${course.courseId}`}>Course {course.courseId + 1}: </label>
                                     <select 
                                         required 
+                                        className="required"
                                         onChange={(e) => {
                                             const updatedCourses = [...newCourses]
                                             updatedCourses[index].courseName = e.target.value
                                             setNewCourses(updatedCourses)
-                                            console.log(newCourses)
+                                            checkAllFields()
+                                            console.log("submit button is disabled:  ", isSubmitBtnDisabled)
                                         }}>
-                                        <option value="none">---Select a course---</option>
+                                        <option disabled selected>---Select a course---</option>
 
                                         {courseCatalog.map((course) => (
                                             <option value={course.courseName}>{course.courseName}</option>
@@ -237,7 +258,26 @@ function Students2() {
                                 </div>
                                 <div>
                                     <label htmlFor={`grade-${course.gradeId}`}>Current Grade for Course {course.gradeId}: </label>
-                                    <input
+                                    <select 
+                                        required 
+                                        className="required"
+                                        id={`grade-${course.gadeId}`}
+                                        onChange={(e) => {
+                                            const updatedCourses = [...newCourses]
+                                            updatedCourses[index].grade = e.target.value
+                                            setNewCourses(updatedCourses)
+                                            checkAllFields()
+                                            console.log("submit button is disabled:  ", isSubmitBtnDisabled)
+                                        }}>
+                                        <option disabled selected>---New Grade---</option>
+                                        <option value="A">A</option>
+                                        <option value="B">B</option>
+                                        <option value="C">C</option>
+                                        <option value="D">D</option>
+                                        <option value="F">F</option>
+                                    </select>
+                                    
+                                    {/* <input
                                         required
                                         type='text'
                                         placeholder='Letter grade, ie. A, B, C, or etc.'
@@ -249,7 +289,7 @@ function Students2() {
                                             setNewCourses(updatedCourses)
                                         }}
                                     >
-                                    </input>
+                                    </input> */}
                                 </div>
                             </div>
                         ))}
@@ -263,7 +303,7 @@ function Students2() {
                         </button>
 
                         <div>
-                            <button type='submit'>Submit</button>
+                            <button disabled={isSubmitBtnDisabled} className="green-btn" type='submit'>Submit</button>
                         </div>
                     </form>
                 </div>
@@ -274,9 +314,9 @@ function Students2() {
 
             <div>
                 {isNewStudentFormShowing ? 
-                    <button onClick={() => cancelAddStudent()}>Cancel</button>
+                    <button className="cancel-btn" onClick={() => cancelAddStudent()}>Cancel</button>
                 :
-                    <button onClick={() => setIsNewStudentFormShowing(!isNewStudentFormShowing)}>Add New Student</button>
+                    <button className="green-btn" onClick={() => setIsNewStudentFormShowing(!isNewStudentFormShowing)}>👨‍💻 Add New Student</button>
                 }
                 
             </div>

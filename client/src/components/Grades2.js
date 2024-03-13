@@ -211,13 +211,13 @@ const Grades2 = () => {
                                                         <option value="D">D</option>
                                                         <option value="F">F</option>
                                                     </select>
-                                                    <button type='submit'>Save</button>
+                                                    <button className="green-btn" type='submit'>✏️ Save</button>
                                                 </form>
-                                                <button onClick={(e) => editGrade()}>Cancel</button>
+                                                <button className="red-btn" onClick={(e) => editGrade()}>Cancel</button>
                                             </div>
                                         :
                                             <div>
-                                                <button onClick={(e) => editGrade()}>Edit</button>
+                                                <button className="green-btn" onClick={(e) => editGrade()}>✏️ Change</button>
                                             </div>
                                     }
                                 </div> 

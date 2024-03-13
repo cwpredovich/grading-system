@@ -46,7 +46,7 @@ const Courses2 = () => {
                     <div className="col-12 grid-item course-listing">{course.courseName}</div>
                 )}
             </div>
-            <button onClick={() => setIsNewCourseFormShowing(!isNewCourseFormShowing)}>Add New Course</button>
+            <button className="green-btn" onClick={() => setIsNewCourseFormShowing(!isNewCourseFormShowing)}>📚 Add New Course</button>
             {isNewCourseFormShowing ? 
                 <form onSubmit={handleSubmit}>
                     <label>Course Name: </label>
