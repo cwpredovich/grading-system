@@ -303,7 +303,7 @@ function Students2() {
                         </button>
 
                         <div>
-                            <button disabled={isSubmitBtnDisabled} className="green-btn" type='submit'>Submit</button>
+                            <button disabled={isSubmitBtnDisabled} className="green-btn" type='submit'>💾 Save</button>
                         </div>
                     </form>
                 </div>
